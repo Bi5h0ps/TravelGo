@@ -22,7 +22,10 @@ func (c *CommentRepository) Conn() (err error) {
 }
 
 func (c *CommentRepository) Select(condition, params string) (result []model.Comment, err error) {
-	selection := provider.DatabaseEngine.Where(condition, params).Where("is_deleted", false).Find(&result)
+	selection := provider.DatabaseEngine.
+		Where(condition, params).
+		Where("is_deleted", false).
+		Order("created_at DESC").Find(&result)
 	if selection.Error != nil {
 		return result, selection.Error
 	}

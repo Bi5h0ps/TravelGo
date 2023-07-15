@@ -5,6 +5,7 @@ import (
 	"TravelGo/backend/service"
 	"errors"
 	"github.com/gin-gonic/gin"
+	"time"
 )
 
 type CommentController struct {
@@ -54,6 +55,7 @@ func (c *CommentController) PostMakeComment(ctx *gin.Context) {
 		Username:  username,
 		Content:   req.Content,
 		IsDeleted: false,
+		CreatedAt: time.Now(),
 	})
 	if err != nil {
 		ErrorResponse(ctx, err)
