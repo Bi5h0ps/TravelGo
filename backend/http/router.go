@@ -56,5 +56,14 @@ func (r *Router) StartServer() {
 		groupPost.POST("/delete", controllerPost.PostDeletePost)
 	}
 
+	repoComment := repository.NewCommentRepository()
+	serviceComment := service.NewCommentService(repoComment)
+	controllerComment := controller.CommentController{CommentService: serviceComment}
+	groupComment := r.ginServer.Group("comment")
+	{
+		groupComment.POST("make", controllerComment.PostMakeComment)
+		groupComment.POST("delete", controllerComment.PostDeleteComment)
+	}
+
 	r.ginServer.Run(":9991")
 }

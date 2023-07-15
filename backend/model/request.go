@@ -17,6 +17,16 @@ type EditPostRequest struct {
 	Tags        []string `json:"tags"`
 }
 
+type MakeCommentRequest struct {
+	PostId  int    `json:"post_id"`
+	Content string `json:"content"`
+}
+
+type DeleteCommentRequest struct {
+	CommentId int    `json:"comment_id"`
+	Username  string `json:"username"`
+}
+
 type SearchPostRequest struct {
 	Type     string `json:"type"`
 	Keywords string `json:"keywords"`
