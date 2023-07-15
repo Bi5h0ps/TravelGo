@@ -44,10 +44,15 @@ func (r *Router) StartServer() {
 	r.ginServer.POST("/signIn", controllerOnBoarding.PostSignIn)
 	r.ginServer.GET("/signOut", controllerOnBoarding.GetSignOut)
 
+	repoComment := repository.NewCommentRepository()
+	serviceComment := service.NewCommentService(repoComment)
+	controllerComment := controller.CommentController{CommentService: serviceComment}
 	repoPost := repository.NewPostRepository()
 	servicePost := service.NewPostService(repoPost)
-	controllerPost := controller.PostController{PostService: servicePost}
-	r.ginServer.POST("/search", controllerPost.PostGetPosts)
+	controllerPost := controller.PostController{PostService: servicePost, CommentService: serviceComment}
+	r.ginServer.POST("/search", controllerPost.PostSearchPosts)
+	r.ginServer.GET("/get_post", controllerPost.GetPosts)
+	r.ginServer.GET("/post_detail", controllerPost.GetPostDetail)
 	groupPost := r.ginServer.Group("post")
 	groupPost.Use(middleware.RequireAuth(serviceUser))
 	{
@@ -56,13 +61,11 @@ func (r *Router) StartServer() {
 		groupPost.POST("/delete", controllerPost.PostDeletePost)
 	}
 
-	repoComment := repository.NewCommentRepository()
-	serviceComment := service.NewCommentService(repoComment)
-	controllerComment := controller.CommentController{CommentService: serviceComment}
 	groupComment := r.ginServer.Group("comment")
+	groupComment.Use(middleware.RequireAuth(serviceUser))
 	{
-		groupComment.POST("make", controllerComment.PostMakeComment)
-		groupComment.POST("delete", controllerComment.PostDeleteComment)
+		groupComment.POST("/make", controllerComment.PostMakeComment)
+		groupComment.POST("/delete", controllerComment.PostDeleteComment)
 	}
 
 	r.ginServer.Run(":9991")

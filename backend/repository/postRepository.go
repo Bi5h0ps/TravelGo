@@ -10,6 +10,7 @@ import (
 type IPostRepository interface {
 	Conn() error
 	Select(condition, params string) ([]model.TravelPost, error)
+	SelectAll() ([]model.TravelPost, error)
 	Insert(post *model.TravelPost) error
 	Update(post *model.TravelPost) error
 	Delete(id int) error
@@ -24,6 +25,14 @@ func (p *PostRepository) Conn() (err error) {
 
 func (p *PostRepository) Select(condition, params string) (result []model.TravelPost, err error) {
 	selection := provider.DatabaseEngine.Where(condition, params).Where("is_deleted", 0).Find(&result)
+	if selection.Error != nil {
+		return result, selection.Error
+	}
+	return
+}
+
+func (p *PostRepository) SelectAll() (result []model.TravelPost, err error) {
+	selection := provider.DatabaseEngine.Where("is_deleted", 0).Find(&result)
 	if selection.Error != nil {
 		return result, selection.Error
 	}

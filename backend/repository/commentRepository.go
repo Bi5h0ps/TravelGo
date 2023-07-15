@@ -11,7 +11,7 @@ type ICommentRepository interface {
 	Conn() error
 	Select(condition, params string) ([]model.Comment, error)
 	Insert(comment *model.Comment) error
-	Delete(id int) error
+	Delete(id int, username string) error
 }
 
 type CommentRepository struct{}
@@ -39,7 +39,7 @@ func (c *CommentRepository) Insert(comment *model.Comment) (err error) {
 	return
 }
 
-func (c *CommentRepository) Delete(id int) (err error) {
+func (c *CommentRepository) Delete(id int, username string) (err error) {
 	if err = c.Conn(); err != nil {
 		return
 	}
@@ -50,6 +50,10 @@ func (c *CommentRepository) Delete(id int) (err error) {
 		return errors.New("no such post found")
 	}
 	tuple := data[0]
+	if tuple.Username != username {
+		err = errors.New("not authorized to delete this comment")
+		return
+	}
 	tuple.IsDeleted = true
 	writeBack := provider.DatabaseEngine.Save(&tuple)
 	if writeBack.Error != nil {

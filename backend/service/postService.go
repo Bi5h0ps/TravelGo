@@ -8,6 +8,7 @@ import (
 type IPostService interface {
 	CreatePost(post *model.TravelPost) error
 	GetPosts(condition, params string) ([]model.TravelPost, error)
+	GetAllPosts() ([]model.TravelPost, error)
 	EditPost(post *model.TravelPost) error
 	DeletePost(id int) error
 }
@@ -22,6 +23,10 @@ func (p *PostService) CreatePost(post *model.TravelPost) error {
 
 func (p *PostService) GetPosts(condition, params string) ([]model.TravelPost, error) {
 	return p.repo.Select(condition, params)
+}
+
+func (p *PostService) GetAllPosts() ([]model.TravelPost, error) {
+	return p.repo.SelectAll()
 }
 
 func (p *PostService) EditPost(post *model.TravelPost) error {

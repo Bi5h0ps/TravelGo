@@ -74,11 +74,7 @@ func (c *CommentController) PostDeleteComment(ctx *gin.Context) {
 		ErrorResponse(ctx, errors.New("please login first"))
 		return
 	}
-	if username != req.Username {
-		ErrorResponse(ctx, errors.New("not authorized to delete this post"))
-		return
-	}
-	err := c.CommentService.DeleteComment(req.CommentId)
+	err := c.CommentService.DeleteComment(req.CommentId, username)
 	if err != nil {
 		ErrorResponse(ctx, err)
 		return
