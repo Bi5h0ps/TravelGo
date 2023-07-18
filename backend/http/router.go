@@ -68,5 +68,8 @@ func (r *Router) StartServer() {
 		groupComment.POST("/delete", controllerComment.PostDeleteComment)
 	}
 
+	controllerMashUp := controller.MashUpController{}
+	r.ginServer.GET("/forecast", controllerMashUp.GetCityTemp)
+	r.ginServer.GET("/hotel_deals", controllerMashUp.GetHotelDeals)
 	r.ginServer.Run(":9991")
 }
