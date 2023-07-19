@@ -69,7 +69,10 @@ func (r *Router) StartServer() {
 	}
 
 	controllerMashUp := controller.MashUpController{}
-	r.ginServer.GET("/forecast", controllerMashUp.GetCityTemp)
-	r.ginServer.GET("/hotel_deals", controllerMashUp.GetHotelDeals)
+	groupMeshUp := r.ginServer.Group("mashup")
+	{
+		groupMeshUp.GET("/forecast", controllerMashUp.GetCityTemp)
+		groupMeshUp.GET("/city_pics", controllerMashUp.GetCityPics)
+	}
 	r.ginServer.Run(":9991")
 }

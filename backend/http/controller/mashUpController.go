@@ -3,7 +3,6 @@ package controller
 import (
 	"TravelGo/backend/model"
 	"encoding/json"
-	"encoding/xml"
 	"errors"
 	"github.com/gin-gonic/gin"
 	"io"
@@ -14,7 +13,7 @@ import (
 
 type MashUpController struct{}
 
-const HotWireApiKey = "9y2jx6mw8hgtp5ex7mfx8p9m"
+const ApiKey = "38340278-86c45a30281af96820e2b3f29"
 
 func (c *MashUpController) GetCityTemp(ctx *gin.Context) {
 	//first request: CITY -> [longitude, latitude]
@@ -87,19 +86,17 @@ func (c *MashUpController) GetCityTemp(ctx *gin.Context) {
 	})
 }
 
-func (c *MashUpController) GetHotelDeals(ctx *gin.Context) {
-	//first request: CITY -> [longitude, latitude]
+func (c *MashUpController) GetCityPics(ctx *gin.Context) {
 	city := ctx.Request.URL.Query().Get("city")
-	startDate := ctx.Request.URL.Query().Get("start_date")
-	endDate := ctx.Request.URL.Query().Get("end_date")
-	baseURL := "http://api.hotwire.com/v1/deal/hotel"
+	baseURL := "https://pixabay.com/api/"
 	params := url.Values{}
-	params.Set("apiKey", HotWireApiKey)
-	params.Set("limit", "10")
-	params.Set("dest", city)
+	params.Set("key", ApiKey)
+	params.Set("q", city)
+	params.Set("image_type", "photo")
+	params.Set("per_page", "5")
 
 	// Construct the URL with the parameters
-	requestURL := baseURL + "?" + params.Encode() + "&startdate=" + startDate + "&enddate=" + endDate
+	requestURL := baseURL + "?" + params.Encode()
 
 	// Send a GET request to the constructed URL
 	resp, err := http.Get(requestURL)
@@ -115,14 +112,15 @@ func (c *MashUpController) GetHotelDeals(ctx *gin.Context) {
 		ErrorResponse(ctx, err)
 		return
 	}
-	var results model.Hotwire
-	err = xml.Unmarshal(body, &results)
-	dealList := make([]map[string]string, len(results.Result.HotelDeals))
-	for i, v := range results.Result.HotelDeals {
-		dealList[i] = map[string]string{
-			"title": v.Headline,
-			"url":   v.Url,
-		}
+	var results model.PixabayResponse
+	err = json.Unmarshal(body, &results)
+	if err != nil {
+		ErrorResponse(ctx, err)
+		return
 	}
-	SuccessResponse(ctx, dealList)
+	imgList := make([]string, len(results.Hits))
+	for i, v := range results.Hits {
+		imgList[i] = v.WebformatURL
+	}
+	SuccessResponse(ctx, imgList)
 }
