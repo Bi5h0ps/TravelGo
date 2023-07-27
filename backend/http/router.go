@@ -59,6 +59,7 @@ func (r *Router) StartServer() {
 		groupPost.POST("/create", controllerPost.PostCreatePost)
 		groupPost.POST("/edit", controllerPost.PostEditPost)
 		groupPost.POST("/delete", controllerPost.PostDeletePost)
+		groupPost.GET("/my_posts", controllerPost.GetUserPost)
 	}
 
 	groupComment := r.ginServer.Group("comment")

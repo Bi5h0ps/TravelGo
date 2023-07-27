@@ -10,9 +10,9 @@ import (
 var HttpClientProvider HttpClient
 var DatabaseEngine *gorm.DB
 
-//const defaultDB = "root:Nmdhj2e2d@tcp(127.0.0.1:3306)/TravelGoDb?parseTime=true"
+const defaultDB = "root:Nmdhj2e2d@tcp(127.0.0.1:3306)/TravelGoDb?parseTime=true"
 
-const defaultDB = "root:Password2023!@tcp(127.0.0.1:3306)/TravelGoDb?parseTime=true"
+//const defaultDB = "root:Password2023!@tcp(127.0.0.1:3306)/TravelGoDb?parseTime=true"
 
 func init() {
 	HttpClientProvider = NewHttpClient()

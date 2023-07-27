@@ -231,3 +231,36 @@ func (p *PostController) GetPostDetail(ctx *gin.Context) {
 	})
 	return
 }
+
+func (c *PostController) GetUserPost(ctx *gin.Context) {
+	username := ctx.GetString("username")
+	if username == "" {
+		ErrorResponse(ctx, errors.New("please login first"))
+		return
+	}
+	posts, err := c.PostService.GetPosts("username", username)
+	if err != nil {
+		ErrorResponse(ctx, err)
+		return
+	}
+	resultSet := make([]map[string]interface{}, len(posts))
+	resultItem := map[string]interface{}{}
+	for i, v := range posts {
+		byteItem, err := json.Marshal(v)
+		if err != nil {
+			ErrorResponse(ctx, err)
+			return
+		}
+		err = json.Unmarshal(byteItem, &resultItem)
+		if err != nil {
+			ErrorResponse(ctx, err)
+			return
+		}
+		resultItem["start_date"] = v.StartDate.Format(dataFormat)
+		resultItem["end_date"] = v.EndDate.Format(dataFormat)
+		resultItem["tags"] = strings.Split(v.Tags, "|")
+		resultSet[i] = resultItem
+	}
+	SuccessResponse(ctx, resultSet)
+	return
+}
