@@ -26,8 +26,8 @@ func (c *OnBoardingController) PostSignUp(ctx *gin.Context) {
 	_, err := c.UserService.AddUser(user)
 	if err != nil {
 		ctx.JSON(http.StatusBadRequest, gin.H{
-			"error": err.Error(),
-			"data":  nil,
+			"msg":  err.Error(),
+			"data": nil,
 		})
 		return
 	}
