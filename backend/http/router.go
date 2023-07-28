@@ -54,7 +54,7 @@ func (r *Router) StartServer() {
 	controllerPost := controller.PostController{PostService: servicePost, CommentService: serviceComment}
 	r.ginServer.POST("/search", controllerPost.PostSearchPosts)
 	r.ginServer.GET("/get_post", controllerPost.GetPosts)
-	r.ginServer.GET("/post_detail", controllerPost.GetPostDetail)
+	r.ginServer.POST("/post_detail", controllerPost.GetPostDetail)
 	groupPost := r.ginServer.Group("post")
 	groupPost.Use(middleware.RequireAuth(serviceUser))
 	{
