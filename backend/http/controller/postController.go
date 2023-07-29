@@ -247,6 +247,7 @@ func (c *PostController) GetUserPost(ctx *gin.Context) {
 	resultSet := make([]map[string]interface{}, len(posts))
 	resultItem := map[string]interface{}{}
 	for i, v := range posts {
+		resultItem = map[string]interface{}{}
 		byteItem, err := json.Marshal(v)
 		if err != nil {
 			ErrorResponse(ctx, err)
