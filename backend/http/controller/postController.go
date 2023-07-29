@@ -210,6 +210,7 @@ func (p *PostController) GetPostDetail(ctx *gin.Context) {
 			"comment_id": v.ID,
 			"username":   v.Username,
 			"content":    v.Content,
+			"created_at": v.CreatedAt.Format("2006-01-02"),
 		}
 	}
 	byteSlice, err := json.Marshal(post)
