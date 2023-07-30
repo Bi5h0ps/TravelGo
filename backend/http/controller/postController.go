@@ -43,7 +43,7 @@ func (p *PostController) PostCreatePost(ctx *gin.Context) {
 	if err != nil {
 		panic("failed to parse date")
 	}
-	err = p.PostService.CreatePost(&model.TravelPost{
+	postId, err := p.PostService.CreatePost(&model.TravelPost{
 		PostTitle:   req.PostTitle,
 		Username:    username,
 		Destination: req.Destination,
@@ -55,7 +55,9 @@ func (p *PostController) PostCreatePost(ctx *gin.Context) {
 		ErrorResponse(ctx, err)
 		return
 	}
-	SuccessResponse(ctx, nil)
+	SuccessResponse(ctx, gin.H{
+		"post_id": postId,
+	})
 	return
 }
 

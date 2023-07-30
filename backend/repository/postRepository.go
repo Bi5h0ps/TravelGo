@@ -11,7 +11,7 @@ type IPostRepository interface {
 	Conn() error
 	Select(condition, params string) ([]model.TravelPost, error)
 	SelectAll() ([]model.TravelPost, error)
-	Insert(post *model.TravelPost) error
+	Insert(post *model.TravelPost) (int, error)
 	Update(post *model.TravelPost) error
 	Delete(id int) error
 }
@@ -39,14 +39,14 @@ func (p *PostRepository) SelectAll() (result []model.TravelPost, err error) {
 	return
 }
 
-func (p *PostRepository) Insert(post *model.TravelPost) (err error) {
+func (p *PostRepository) Insert(post *model.TravelPost) (id int, err error) {
 	if err = p.Conn(); err != nil {
 		return
 	}
-	if result := provider.DatabaseEngine.Create(post); result.Error != nil {
-		return result.Error
+	if result := provider.DatabaseEngine.Create(&post); result.Error != nil {
+		return 0, result.Error
 	}
-	return
+	return post.ID, err
 }
 
 func (p *PostRepository) Update(post *model.TravelPost) (err error) {

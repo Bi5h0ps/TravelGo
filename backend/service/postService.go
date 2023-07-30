@@ -6,7 +6,7 @@ import (
 )
 
 type IPostService interface {
-	CreatePost(post *model.TravelPost) error
+	CreatePost(post *model.TravelPost) (int, error)
 	GetPosts(condition, params string) ([]model.TravelPost, error)
 	GetAllPosts() ([]model.TravelPost, error)
 	EditPost(post *model.TravelPost) error
@@ -17,7 +17,7 @@ type PostService struct {
 	repo repository.IPostRepository
 }
 
-func (p *PostService) CreatePost(post *model.TravelPost) error {
+func (p *PostService) CreatePost(post *model.TravelPost) (int, error) {
 	return p.repo.Insert(post)
 }
 
