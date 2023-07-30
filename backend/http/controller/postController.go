@@ -84,6 +84,11 @@ func (p *PostController) PostEditPost(ctx *gin.Context) {
 		ErrorResponse(ctx, err)
 		return
 	}
+	username := ctx.GetString("username")
+	if username == "" {
+		ErrorResponse(ctx, errors.New("please login first"))
+		return
+	}
 	// Parse the frontend date string into a time.Time value
 	startDate, err := time.Parse(dataFormat, req.StartDate)
 	if err != nil {
@@ -95,6 +100,7 @@ func (p *PostController) PostEditPost(ctx *gin.Context) {
 	}
 	err = p.PostService.EditPost(&model.TravelPost{
 		ID:          req.PostId,
+		Username:    username,
 		PostTitle:   req.PostTitle,
 		Destination: req.Destination,
 		StartDate:   startDate,
