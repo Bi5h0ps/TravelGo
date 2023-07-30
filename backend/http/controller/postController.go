@@ -139,6 +139,7 @@ func (p *PostController) PostSearchPosts(ctx *gin.Context) {
 	result := make([]map[string]interface{}, len(posts))
 	body := map[string]interface{}{}
 	for i, v := range posts {
+		body = map[string]interface{}{}
 		byteSlice, err := json.Marshal(v)
 		err = json.Unmarshal(byteSlice, &body)
 		if err != nil {
